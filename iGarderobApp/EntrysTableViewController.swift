@@ -55,9 +55,10 @@ class EntrysTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var cell: UITableViewCell!
-        cell = tableView.dequeueReusableCell(withIdentifier: "Identifier2")
-        let customCell =   cell as! CustomCell
+        let dequeuedCell = tableView.dequeueReusableCell(withIdentifier: "Identifier2", for: indexPath)
+        guard let cell = dequeuedCell as? CustomCell else {
+            return dequeuedCell
+        }
         let info = self.userLists?.data.first?[indexPath.row]
         guard   let dateStringDa = info?.da,
             let dateStringDm = info?.dm,
@@ -69,21 +70,21 @@ class EntrysTableViewController: UITableViewController {
         }
         let dmString = createDateString(dateDouble: dateDoubleDm)
         let daString = createDateString(dateDouble: dateDoubleDa)
-        customCell.daLabel.text = "da: \(daString)"
+        cell.daLabel.text = "da: \(daString)"
         if(dateDoubleDm != dateDoubleDa) {
-            customCell.dmLabel.text = "dm: \(dmString)"
+            cell.dmLabel.text = "dm: \(dmString)"
         } else {
-            customCell.dmLabel.text = nil
+            cell.dmLabel.text = nil
         }
         if (body.count > 200) {
             let prefixString =  body.prefix(200) + "..."
-            customCell.enbtryLabel.numberOfLines = 4
-            customCell.enbtryLabel.text = String(prefixString)
+            cell.enbtryLabel.numberOfLines = 4
+            cell.enbtryLabel.text = String(prefixString)
         } else {
-            customCell.enbtryLabel.numberOfLines = 4
-            customCell.enbtryLabel.text = body
+            cell.enbtryLabel.numberOfLines = 4
+            cell.enbtryLabel.text = body
         }
-        return customCell
+        return cell
     }
     
     func createDateString(dateDouble:Double) -> String {
